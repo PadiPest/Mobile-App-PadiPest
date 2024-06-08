@@ -8,21 +8,47 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.credentials.ClearCredentialStateRequest
+import androidx.credentials.CredentialManager
+import androidx.lifecycle.lifecycleScope
+import com.example.padipest.databinding.ActivityMainBinding
+import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityMainBinding
+    private lateinit var firebaseAuth: FirebaseAuth
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
-        val intent = Intent(this@MainActivity, LoginActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-        startActivity(intent)
+        firebaseAuth = FirebaseAuth.getInstance()
+
+        val user = firebaseAuth.currentUser
+
+        binding.textView.text = user?.email
+
+        binding.btnLogout.setOnClickListener{
+
+            lifecycleScope.launch {
+                val credentialManager = CredentialManager.create(this@MainActivity)
+
+                firebaseAuth.signOut()
+                credentialManager.clearCredentialState(ClearCredentialStateRequest())
+                startActivity(Intent(this@MainActivity, SplashScreenActivity::class.java))
+                finish()
+            }
+
+        }
 
     }
 }

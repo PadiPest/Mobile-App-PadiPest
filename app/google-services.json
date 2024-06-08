@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1033342027002",
+    "project_id": "padipest-capstone-24",
+    "storage_bucket": "padipest-capstone-24.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1033342027002:android:eae6c76ef6fc5cdbcef543",
+        "android_client_info": {
+          "package_name": "com.example.padipest"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1033342027002-f4u2ghim1rjfdga6njgidb0asqc46vrk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.padipest",
+            "certificate_hash": "9a854029657e011ba7acd0563022baef4fe1e78f"
+          }
+        },
+        {
+          "client_id": "1033342027002-j2gv83ncod66rnhqb8osq4pnq68qeji4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDCaa-YROh5r3YtdKT2B498Q4DqaKpG-xs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1033342027002-j2gv83ncod66rnhqb8osq4pnq68qeji4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
