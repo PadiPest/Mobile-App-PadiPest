@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.EditProfileActivity">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="8dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
+
+            <!-- Display Nama -->
+            <TextView
+                android:id="@+id/name_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nama"
+                android:textSize="16sp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <TextView
+                android:id="@+id/name_display"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Your Name"
+                android:textColor="@android:color/darker_gray"
+                android:background="@android:color/transparent"
+                android:layout_marginTop="8dp"
+                app:layout_constraintTop_toBottomOf="@id/name_label"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <!-- Display Email (Tidak dapat diubah) -->
+            <TextView
+                android:id="@+id/email_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Email"
+                android:textSize="16sp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintTop_toBottomOf="@id/name_display"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <TextView
+                android:id="@+id/email_input"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="youremail@example.com"
+                android:textColor="@android:color/darker_gray"
+                android:background="@android:color/transparent"
+                android:layout_marginTop="8dp"
+                app:layout_constraintTop_toBottomOf="@id/email_label"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <!-- Form Input Sandi Lama -->
+            <TextView
+                android:id="@+id/old_password_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sandi Lama"
+                android:textSize="16sp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintTop_toBottomOf="@id/email_input"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <EditText
+                android:id="@+id/old_password_input"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:hint="Masukkan sandi lama"
+                android:inputType="textPassword"
+                android:layout_marginTop="8dp"
+                app:layout_constraintTop_toBottomOf="@id/old_password_label"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <!-- Form Input Sandi Baru -->
+            <TextView
+                android:id="@+id/new_password_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sandi Baru"
+                android:textSize="16sp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintTop_toBottomOf="@id/old_password_input"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <EditText
+                android:id="@+id/new_password_input"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:hint="Masukkan sandi baru"
+                android:inputType="textPassword"
+                android:layout_marginTop="8dp"
+                app:layout_constraintTop_toBottomOf="@id/new_password_label"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <!-- Button Simpan -->
+            <Button
+                android:id="@+id/save_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Simpan"
+                android:background="@drawable/button_shape"
+                android:backgroundTint="@color/colorPrimary"
+                android:textColor="@color/white"
+                android:layout_marginTop="24dp"
+                android:textSize="20sp"
+                app:layout_constraintTop_toBottomOf="@id/new_password_input"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
