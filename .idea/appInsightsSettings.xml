@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.example.padipest" />
+                  <option name="mobileSdkAppId" value="1:1033342027002:android:eae6c76ef6fc5cdbcef543" />
+                  <option name="projectId" value="padipest-capstone-24" />
+                  <option name="projectNumber" value="1033342027002" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
