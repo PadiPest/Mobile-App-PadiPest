@@ -30,10 +30,12 @@
         android:background="@drawable/button_shape"
         android:backgroundTint="@color/colorPrimary"
         android:drawableEnd="@drawable/galeri"
-        android:drawablePadding="-55dp"
+        android:drawablePadding="0dp"
+        android:paddingLeft="50dp"
         android:paddingRight="50dp"
         android:text="galeri"
         android:textColor="@color/white"
+        android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/cameraButton"
         app:layout_constraintHorizontal_bias="0.5"
@@ -49,14 +51,17 @@
         android:background="@drawable/button_shape"
         android:backgroundTint="@color/colorPrimary"
         android:drawableEnd="@drawable/kamera"
-        android:drawablePadding="-50dp"
+        android:drawablePadding="0dp"
+        android:paddingLeft="50dp"
         android:paddingRight="50dp"
         android:text="kamera"
         android:textColor="@color/white"
+        android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/galleryButton" />
+
 
     <Button
         android:id="@+id/deteksiButton"
@@ -67,14 +72,17 @@
         android:background="@drawable/button_shape"
         android:backgroundTint="@color/colorPrimary"
         android:drawableEnd="@drawable/deteksi"
-        android:drawablePadding="-60dp"
-        android:paddingRight="65dp"
+        android:drawablePadding="0dp"
+        android:paddingLeft="55dp"
+        android:paddingRight="70dp"
         android:text="Deteksi"
         android:textColor="@color/white"
+        android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/previewImageView"
         app:layout_constraintVertical_bias="0.423" />
+
 
     <TextView
         android:id="@+id/hasil_deteksi"
