@@ -14,13 +14,28 @@ import androidx.fragment.app.Fragment
 import com.example.padipest.databinding.FragmentHomeBinding
 import android.Manifest
 import android.content.Intent
+import android.os.Build
 import android.util.Log
 import android.view.OrientationEventListener
 import android.view.Surface
 import androidx.activity.result.PickVisualMediaRequest
+import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
 import androidx.core.net.toUri
+import androidx.lifecycle.lifecycleScope
+import com.example.padipest.data.api.ApiConfig
+import com.example.padipest.data.response.UploadResponse
+import com.example.padipest.reduceFileImage
 import com.example.padipest.ui.CameraActivity
 import com.example.padipest.ui.CameraActivity.Companion.CAMERAX_RESULT
+import com.example.padipest.uriToFile
+import com.google.gson.Gson
+import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import retrofit2.HttpException
 
 class HomeFragment : Fragment() {
 
@@ -51,6 +66,7 @@ class HomeFragment : Fragment() {
             )
         } == PackageManager.PERMISSION_GRANTED
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -66,6 +82,7 @@ class HomeFragment : Fragment() {
 
         binding.cameraButton.setOnClickListener{ startCameraX() }
         binding.galleryButton.setOnClickListener{ startGallery() }
+        binding.deteksiButton.setOnClickListener{ uploadImage() }
 
         return root
     }
@@ -104,6 +121,85 @@ class HomeFragment : Fragment() {
             currentImageUri = it.data?.getStringExtra(CameraActivity.EXTRA_CAMERAX_IMAGE)?.toUri()
             showImage()
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.Q)
+    private fun uploadImage() {
+        currentImageUri?.let { uri ->
+            val imageFile = context?.let { uriToFile(uri, it).reduceFileImage() }
+            Log.d("Image File", "showImage: ${imageFile?.path}")
+
+            showLoading(true)
+
+            val requestImageFile = imageFile?.asRequestBody("image/jpeg".toMediaType())
+            val multipartBody = requestImageFile?.let {
+                MultipartBody.Part.createFormData(
+                    "image",
+                    imageFile.name,
+                    it
+                )
+            }
+
+            lifecycleScope.launch {
+                try {
+                    val apiService = ApiConfig.getApiService()
+                    val successResponse = multipartBody?.let { apiService.uploadImage(it) }
+                    if (successResponse != null) {
+                        context?.let {
+                            AlertDialog.Builder(it).apply {
+                                setTitle("Deteksi")
+                                setMessage(successResponse.message)
+                                setPositiveButton("Ok") { dialog, _ ->
+                                    dialog.cancel()
+                                }
+                                create()
+                                show()
+                            }
+                        }
+                        binding.hasil.text = setText(successResponse)
+                    }
+                    showLoading(false)
+                } catch (e: HttpException) {
+                    val errorBody = e.response()?.errorBody()?.string()
+                    val errorResponse = Gson().fromJson(errorBody, UploadResponse::class.java)
+                    context?.let {
+                        AlertDialog.Builder(it).apply {
+                            setTitle("Deteksi")
+                            setMessage(errorResponse.message)
+                            setPositiveButton("Ok") { dialog, _ ->
+                                dialog.cancel()
+                            }
+                            create()
+                            show()
+                        }
+                    }
+                    showLoading(false)
+                }
+            }
+
+        } ?: context?.let {
+            AlertDialog.Builder(it).apply {
+                setTitle("Deteksi")
+                setMessage("Gambar tidak boleh kosong!")
+                setPositiveButton("Ok") { dialog, _ ->
+                    dialog.cancel()
+                }
+                create()
+                show()
+            }
+        }
+    }
+
+    private fun setText(successResponse: UploadResponse): String {
+
+        val result = "Result : ${successResponse.data.result}"
+        val confidence = "Confidence :  ${successResponse.data.confidenceScore}%"
+
+        return "$result\n$confidence"
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 
     private val orientationEventListener by lazy {

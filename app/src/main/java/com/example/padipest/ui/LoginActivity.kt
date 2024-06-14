@@ -67,7 +67,7 @@ class LoginActivity : AppCompatActivity() {
             if (email.isEmpty() || pass.isEmpty()) {
                 binding.progressBar.visibility = View.GONE
                 AlertDialog.Builder(this@LoginActivity).apply {
-                    setTitle("Register")
+                    setTitle("Login")
                     setMessage("Input tidak boleh kosong!")
                     setPositiveButton("Ok") { dialog, _ ->
                         dialog.cancel()

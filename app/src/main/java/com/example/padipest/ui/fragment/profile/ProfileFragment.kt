@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.credentials.ClearCredentialStateRequest
 import androidx.credentials.CredentialManager
 import androidx.lifecycle.lifecycleScope
@@ -59,14 +60,26 @@ class ProfileFragment : Fragment() {
         }
 
         binding.btnLogout.setOnClickListener{
+            context?.let {
+                AlertDialog.Builder(it).apply {
+                    setTitle("Logout")
+                    setMessage("Yakin mau logout?")
+                    setPositiveButton("Ya") { _, _ ->
+                        lifecycleScope.launch {
+                            val credentialManager = context.let { it1 -> CredentialManager.create(it1) }
 
-            lifecycleScope.launch {
-                val credentialManager = context?.let { it1 -> CredentialManager.create(it1) }
-
-                firebaseAuth.signOut()
-                credentialManager?.clearCredentialState(ClearCredentialStateRequest())
-                startActivity(Intent(activity, SplashScreenActivity::class.java))
-                activity?.finish()
+                            firebaseAuth.signOut()
+                            credentialManager.clearCredentialState(ClearCredentialStateRequest())
+                            startActivity(Intent(activity, SplashScreenActivity::class.java))
+                            activity?.finish()
+                        }
+                    }
+                    setNegativeButton("Tidak") { dialog, _ ->
+                        dialog.cancel()
+                    }
+                    create()
+                    show()
+                }
             }
 
         }
