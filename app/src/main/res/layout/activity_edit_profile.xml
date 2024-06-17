@@ -34,13 +34,12 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"/>
 
-            <TextView
+            <EditText
                 android:id="@+id/name_display"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Your Name"
-                android:textColor="@android:color/darker_gray"
-                android:background="@android:color/transparent"
+                android:hint="Masukkan nama Anda"
+                android:textColor="@android:color/black"
                 android:layout_marginTop="8dp"
                 app:layout_constraintTop_toBottomOf="@id/name_label"
                 app:layout_constraintStart_toStartOf="parent"
