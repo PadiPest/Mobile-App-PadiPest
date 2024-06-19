@@ -1,16 +1,26 @@
 package com.example.padipest.ui
 
+import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.padipest.R
 import com.example.padipest.databinding.ActivityRegisterBinding
+import com.example.padipest.ui.login.LoginActivity
 import com.google.firebase.auth.FirebaseAuth
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 
 class RegisterActivity : AppCompatActivity() {
 
@@ -30,6 +40,13 @@ class RegisterActivity : AppCompatActivity() {
 
         supportActionBar?.hide()
 
+        val file = convertDrawableToFile(this, R.drawable.baseline_account_circle_24, "profile.jpg")
+        if (file != null) {
+            Log.d("image masuk", "onCreate: $file")
+        } else {
+            Log.d("image", "onCreate: $file")
+        }
+
         firebaseAuth = FirebaseAuth.getInstance()
 
         binding.tvLogin.setOnClickListener{
@@ -40,13 +57,14 @@ class RegisterActivity : AppCompatActivity() {
 
         binding.btnDaftar.setOnClickListener{
 
+            val name = binding.nameEditText.text.toString()
             val email = binding.emailEditText.text.toString()
             val pass = binding.passwordEditText.text.toString()
             val confirmPass = binding.confirmPasswordEditText.text.toString()
 
             binding.progressBar.visibility = View.VISIBLE
 
-            if (email.isEmpty() || pass.isEmpty() || confirmPass.isEmpty()) {
+            if (email.isEmpty() || pass.isEmpty() || confirmPass.isEmpty() || name.isEmpty()) {
                 binding.progressBar.visibility = View.GONE
                 AlertDialog.Builder(this@RegisterActivity).apply {
                     setTitle("Register")
@@ -72,6 +90,7 @@ class RegisterActivity : AppCompatActivity() {
                     firebaseAuth.createUserWithEmailAndPassword(email, pass).addOnCompleteListener{
 
                         if (it.isSuccessful) {
+
                             binding.progressBar.visibility = View.GONE
                             AlertDialog.Builder(this@RegisterActivity).apply {
                                 setTitle("Register")
@@ -90,7 +109,7 @@ class RegisterActivity : AppCompatActivity() {
                             binding.progressBar.visibility = View.GONE
                             AlertDialog.Builder(this@RegisterActivity).apply {
                                 setTitle("Register")
-                                setMessage(it.exception.toString())
+                                setMessage("Register Gagal")
                                 setPositiveButton("Ok") { dialog, _ ->
                                     dialog.cancel()
                                 }
@@ -119,4 +138,35 @@ class RegisterActivity : AppCompatActivity() {
         }
 
     }
+
+    fun convertDrawableToFile(context: Context, drawableId: Int, fileName: String): File? {
+        val drawable: Drawable? = ContextCompat.getDrawable(context, drawableId)
+        if (drawable is BitmapDrawable) {
+            val bitmap = drawable.bitmap
+            return saveBitmapToFile(context, bitmap, fileName)
+        } else {
+            val bitmap = drawable?.let {
+                Bitmap.createBitmap(it.intrinsicWidth, it.intrinsicHeight, Bitmap.Config.ARGB_8888).apply {
+                    val canvas = android.graphics.Canvas(this)
+                    it.setBounds(0, 0, canvas.width, canvas.height)
+                    it.draw(canvas)
+                }
+            }
+            return bitmap?.let { saveBitmapToFile(context, it, fileName) }
+        }
+    }
+
+    private fun saveBitmapToFile(context: Context, bitmap: Bitmap, fileName: String): File? {
+        val file = File(context.getExternalFilesDir(null), fileName)
+        try {
+            FileOutputStream(file).use { out ->
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
+            }
+            return file
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        return null
+    }
+
 }

@@ -1,10 +1,11 @@
-package com.example.padipest.ui
+package com.example.padipest.ui.login
 
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -16,7 +17,11 @@ import androidx.credentials.GetCredentialResponse
 import androidx.credentials.exceptions.GetCredentialException
 import androidx.lifecycle.lifecycleScope
 import com.example.padipest.R
+import com.example.padipest.data.pref.UserModel
 import com.example.padipest.databinding.ActivityLoginBinding
+import com.example.padipest.ui.MainActivity
+import com.example.padipest.ui.RegisterActivity
+import com.example.padipest.ui.ViewModelFactory
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
@@ -30,6 +35,10 @@ class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
     private lateinit var firebaseAuth: FirebaseAuth
+
+    private val viewModel by viewModels<LoginViewModel> {
+        ViewModelFactory.getInstance(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -86,28 +95,44 @@ class LoginActivity : AppCompatActivity() {
             }
             else {
 
-                firebaseAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener{
+                firebaseAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener{ result ->
 
-                    if (it.isSuccessful) {
+                    if (result.isSuccessful) {
                         binding.progressBar.visibility = View.GONE
-                        AlertDialog.Builder(this@LoginActivity).apply {
-                            setTitle("Login")
-                            setMessage("Login success!")
-                            setPositiveButton("Ok") { _, _ ->
-                                val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-                                startActivity(intent)
-                                finish()
-                            }
-                            create()
-                            show()
+                        firebaseAuth.currentUser?.let { data ->
+                            viewModel.getUser(data.uid)
+                            Log.d(TAG, "onCreate: " + data.uid)
                         }
+
+                        viewModel.isLoading.observe(this) {
+                            showLoading(it)
+                        }
+
+                        viewModel.result.observe(this) { dataResult ->
+
+                            viewModel.saveSession(UserModel(dataResult.data.userId, dataResult.data.name, dataResult.data.pictureUrl, email, pass))
+
+                            AlertDialog.Builder(this@LoginActivity).apply {
+                                setTitle("Login")
+                                setMessage("Login success!")
+                                setPositiveButton("Ok") { _, _ ->
+                                    val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                                    startActivity(intent)
+                                    finish()
+                                }
+                                create()
+                                show()
+                            }
+
+                        }
+
                     }
                     else {
                         binding.progressBar.visibility = View.GONE
                         AlertDialog.Builder(this@LoginActivity).apply {
                             setTitle("Login")
-                            setMessage(it.exception.toString())
+                            setMessage("Login gagal!")
                             setPositiveButton("Ok") { dialog, _ ->
                                 dialog.cancel()
                             }
@@ -177,6 +202,7 @@ class LoginActivity : AppCompatActivity() {
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     Log.d(TAG, "signInWithCredential:success")
+
                     val user: FirebaseUser? = firebaseAuth.currentUser
                     updateUI(user)
                 } else {
@@ -197,6 +223,10 @@ class LoginActivity : AppCompatActivity() {
         super.onStart()
         val currentUser = firebaseAuth.currentUser
         updateUI(currentUser)
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 
     companion object {
