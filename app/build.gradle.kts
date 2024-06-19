@@ -17,6 +17,7 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField("String", "BASE_URL", "\"https://padipest-api-3x3go7n3pq-et.a.run.app/\"")
+        buildConfigField("String", "BASE_URL_USER", "\"https://padipest-user-3x3go7n3pq-et.a.run.app/\"")
     }
 
     buildTypes {
@@ -58,6 +59,9 @@ dependencies {
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.androidx.navigation.fragment)
+
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.activity.ktx)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

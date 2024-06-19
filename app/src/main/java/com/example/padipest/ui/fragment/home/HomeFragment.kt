@@ -193,7 +193,14 @@ class HomeFragment : Fragment() {
     private fun setText(successResponse: UploadResponse): String {
 
         val result = "Result : ${successResponse.data.result}"
-        val confidence = "Confidence :  ${successResponse.data.confidenceScore}%"
+        val confidenceScore = successResponse.data.confidenceScore
+        val confidenceString = confidenceScore.toString().replace(".", ",")
+        val convert = if (confidenceString.length >= 5) {
+            confidenceString.substring(0, 5)
+        } else {
+            confidenceString
+        }
+        val confidence = "Confidence : $convert %"
 
         return "$result\n$confidence"
     }
