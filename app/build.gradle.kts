@@ -73,6 +73,8 @@ dependencies {
 
     implementation(libs.circleimageview)
     implementation(libs.glide)
+    annotationProcessor(libs.glide.compiler)
+
     implementation(libs.retrofit)
     implementation(libs.retrofit2.converter.gson)
     implementation(libs.logging.interceptor)

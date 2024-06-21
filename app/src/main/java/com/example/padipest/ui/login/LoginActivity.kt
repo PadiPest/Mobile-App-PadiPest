@@ -20,7 +20,7 @@ import com.example.padipest.R
 import com.example.padipest.data.pref.UserModel
 import com.example.padipest.databinding.ActivityLoginBinding
 import com.example.padipest.ui.MainActivity
-import com.example.padipest.ui.RegisterActivity
+import com.example.padipest.ui.register.RegisterActivity
 import com.example.padipest.ui.ViewModelFactory
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential

@@ -2,6 +2,7 @@ package com.example.padipest.ui.fragment.profile
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,7 @@ import androidx.credentials.CredentialManager
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
 import com.example.padipest.R
 import com.example.padipest.databinding.FragmentProfileBinding
 import com.example.padipest.ui.editProfile.EditProfileActivity
@@ -44,11 +46,14 @@ class ProfileFragment : Fragment() {
             binding.profileName.text = user.name
             binding.profileEmail.text = user.email
 
+            Log.d("TAG", "onCreateView: ${user.imageUrl}")
+
             activity?.let { it ->
                 Glide.with(it)
                     .load(user.imageUrl)
-                    .error(R.drawable.baseline_account_circle_24)
+                    .centerCrop()
                     .placeholder(R.drawable.baseline_account_circle_24)
+                    .transition(withCrossFade())
                     .into(binding.profileImage)
             }
 
