@@ -1,4 +1,4 @@
-package com.example.padipest.ui
+package com.example.padipest.ui.register
 
 import android.content.Context
 import android.content.Intent
@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -16,8 +17,13 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.padipest.R
 import com.example.padipest.databinding.ActivityRegisterBinding
+import com.example.padipest.ui.ViewModelFactory
 import com.example.padipest.ui.login.LoginActivity
 import com.google.firebase.auth.FirebaseAuth
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -26,6 +32,10 @@ class RegisterActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityRegisterBinding
     private lateinit var firebaseAuth: FirebaseAuth
+
+    private val viewModel by viewModels<RegisterViewModel> {
+        ViewModelFactory.getInstance(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,13 +49,6 @@ class RegisterActivity : AppCompatActivity() {
         }
 
         supportActionBar?.hide()
-
-        val file = convertDrawableToFile(this, R.drawable.baseline_account_circle_24, "profile.jpg")
-        if (file != null) {
-            Log.d("image masuk", "onCreate: $file")
-        } else {
-            Log.d("image", "onCreate: $file")
-        }
 
         firebaseAuth = FirebaseAuth.getInstance()
 
@@ -91,19 +94,47 @@ class RegisterActivity : AppCompatActivity() {
 
                         if (it.isSuccessful) {
 
-                            binding.progressBar.visibility = View.GONE
-                            AlertDialog.Builder(this@RegisterActivity).apply {
-                                setTitle("Register")
-                                setMessage("Register success!")
-                                setPositiveButton("Ok") { _, _ ->
-                                    val intent = Intent(this@RegisterActivity, LoginActivity::class.java)
-                                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-                                    startActivity(intent)
-                                    finish()
+                            val file = convertDrawableToFile(this, R.drawable.baseline_account_circle_24, "profile.jpg")
+                            if (file != null) {
+                                val requestBodyName = name.toRequestBody("text/plain".toMediaType())
+                                val requestBodyId = firebaseAuth.currentUser?.uid?.toRequestBody("text/plain".toMediaType())
+                                val requestImageFile = file.asRequestBody("image/jpeg".toMediaType())
+                                val multipartBody = MultipartBody.Part.createFormData(
+                                    "image",
+                                    file.name,
+                                    requestImageFile
+                                )
+
+                                if (requestBodyId != null) {
+                                    viewModel.profiles(multipartBody, requestBodyName, requestBodyId)
                                 }
-                                create()
-                                show()
+
+                                viewModel.result.observe(this) {
+
+                                    binding.progressBar.visibility = View.GONE
+
+                                    firebaseAuth.signOut()
+
+                                    AlertDialog.Builder(this@RegisterActivity).apply {
+                                        setTitle("Register")
+                                        setMessage("Register success!")
+                                        setPositiveButton("Ok") { _, _ ->
+                                            val intent = Intent(this@RegisterActivity, LoginActivity::class.java)
+                                            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                                            startActivity(intent)
+                                            finish()
+                                        }
+                                        create()
+                                        show()
+                                    }
+
+                                }
+
+
+                            } else {
+                                Log.d("image", "onCreate: $file")
                             }
+
                         }
                         else {
                             binding.progressBar.visibility = View.GONE

@@ -8,6 +8,7 @@ import com.example.padipest.injection.Injection
 import com.example.padipest.ui.editProfile.EditProfileViewModel
 import com.example.padipest.ui.fragment.profile.ProfileViewModel
 import com.example.padipest.ui.login.LoginViewModel
+import com.example.padipest.ui.register.RegisterViewModel
 
 class ViewModelFactory(private val repository: Repository) : ViewModelProvider.NewInstanceFactory() {
 
@@ -23,12 +24,9 @@ class ViewModelFactory(private val repository: Repository) : ViewModelProvider.N
             modelClass.isAssignableFrom(EditProfileViewModel::class.java) -> {
                 EditProfileViewModel(repository) as T
             }
-//            modelClass.isAssignableFrom(SignupViewModel::class.java) -> {
-//                SignupViewModel(repository) as T
-//            }
-//            modelClass.isAssignableFrom(MapsViewModel::class.java) -> {
-//                MapsViewModel(repository) as T
-//            }
+            modelClass.isAssignableFrom(RegisterViewModel::class.java) -> {
+                RegisterViewModel(repository) as T
+            }
             else -> throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
         }
     }
