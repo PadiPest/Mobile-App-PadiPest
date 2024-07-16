@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">Padipest</string>
+    <string name="your_web_client_id">1033342027002-j2gv83ncod66rnhqb8osq4pnq68qeji4.apps.googleusercontent.com</string>
+    <string name="home">Home</string>
+    <string name="profile">Profile</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_profile">Profile</string>
 </resources>
